@@ -877,6 +877,132 @@
             padding: 2px 4px;
             border-radius: 2px;
         }
+
+        /* Backup Management Styles */
+        .backup-panel {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 500px;
+            max-height: 600px;
+            background: #2a2a2a;
+            border-radius: 5px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+            z-index: 1500;
+            overflow: hidden;
+            border: 2px solid #0078d4;
+        }
+
+        .backup-panel-header {
+            background: #1e1e1e;
+            padding: 15px 20px;
+            border-bottom: 2px solid #0078d4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .backup-panel-header h3 {
+            color: #0078d4;
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .backup-panel-body {
+            padding: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .backup-item {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            border-left: 3px solid #0078d4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .backup-info {
+            flex: 1;
+        }
+
+        .backup-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .backup-header strong {
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .backup-badge {
+            background: #0078d4;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+
+        .backup-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8em;
+            color: #999;
+            flex-wrap: wrap;
+        }
+
+        .backup-time-ago {
+            color: #0078d4;
+            font-weight: 600;
+        }
+
+        .backup-actions {
+            display: flex;
+            gap: 5px;
+            flex-direction: column;
+        }
+
+        .empty-backup {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .backup-status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        .backup-status-indicator .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #107c10;
+            box-shadow: 0 0 8px #107c10;
+        }
+
+        .btn-backup {
+            background: #107c10;
+            color: white;
+        }
+
+        .btn-backup:hover:not(:disabled) {
+            background: #0e6b0e;
+        }
     </style>
 </head>
 <body>
@@ -894,6 +1020,11 @@
                     <label>Safety Mode:</label>
                     <div class="toggle-switch active" id="safetyToggle" onclick="toggleSafetyMode()"></div>
                     <span class="safety-mode-label" id="safetyLabel">BEGINNER</span>
+                </div>
+                <div class="backup-status-indicator">
+                    <div class="status-dot"></div>
+                    <span id="backupStatus">No backups yet</span>
+                    <span style="color: #0078d4; font-weight: bold;">(<span id="backupCount">0</span> backups)</span>
                 </div>
                 <p>Enhanced with Multi-Sort, Color Groups & Batch Find/Replace</p>
             </div>
@@ -996,6 +1127,7 @@
                 <div class="toolbar-section">
                     <button class="btn btn-primary" onclick="showAddModal()" id="addBtn" disabled>ADD NEW</button>
                     <button class="btn btn-secondary" onclick="quickDuplicateAbove()" id="quickDupBtn" disabled>⬆️ QUICK COPY</button>
+                    <button class="btn btn-backup" onclick="toggleBackupPanel()">💾 BACKUPS</button>
                     <button class="btn btn-secondary" onclick="toggleFindReplace()">🔍 FIND/REPLACE</button>
                     <button class="btn btn-secondary" onclick="toggleColorGrouping()" id="colorGroupBtn">🎨 COLOR GROUPS</button>
                 </div>
@@ -1142,7 +1274,23 @@
     </div>
     
     <div class="alert-container" id="alertContainer"></div>
-    
+
+    <!-- Backup Management Panel -->
+    <div class="backup-panel" id="backupPanel">
+        <div class="backup-panel-header">
+            <h3>💾 Backup Management</h3>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-sm btn-danger" onclick="clearAllBackups()">CLEAR ALL</button>
+                <button class="close-btn" onclick="toggleBackupPanel()">&times;</button>
+            </div>
+        </div>
+        <div class="backup-panel-body">
+            <div id="backupList">
+                <div class="empty-backup">No backups available yet. Backups are created automatically when you save.</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ========================================
         // PRESET CONFIGURATION
@@ -1165,7 +1313,11 @@
         let safetyMode = true; // true = beginner, false = expert
         let colorGroupingEnabled = false;
         let noteGroups = new Map(); // Map notes to color group numbers
-        
+
+        // Backup management
+        const MAX_BACKUPS = 10; // Keep last 10 backups
+        let backups = []; // Array of {timestamp, filename, data}
+
         // Function descriptions (0-5) from IPB.LSP
         const functionDescriptions = {
             '0': 'Standard insert (no special action)',
@@ -1197,11 +1349,15 @@
             setupKeyboardShortcuts();
             setupBeforeUnload();
             setupRealTimeValidation();
-            
+
             // Set preset block library path
             if (PRESET_CONFIG.blockLibraryPath) {
                 document.getElementById('blockPath').value = PRESET_CONFIG.blockLibraryPath;
             }
+
+            // Load backups from localStorage
+            loadBackupsFromStorage();
+            updateBackupStatus();
         });
         
         // ========================================
@@ -1911,7 +2067,10 @@
                     return;
                 }
             }
-            
+
+            // Create backup before saving
+            createBackup();
+
             const csv = generateCSV();
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
@@ -1923,7 +2082,8 @@
             modifiedCount = 0;
             hasUnsavedChanges = false;
             updateStats();
-            showAlert('CSV file saved successfully', 'success');
+            showAlert('CSV file saved successfully (backup created)', 'success');
+            updateBackupStatus();
         }
         
         function generateCSV() {
@@ -2357,6 +2517,222 @@
             });
         }
         
+        // ========================================
+        // BACKUP MANAGEMENT SYSTEM
+        // ========================================
+        function createBackup() {
+            const timestamp = new Date().toISOString();
+            const backup = {
+                timestamp: timestamp,
+                filename: csvFileName || 'IPB-DescriptionKeys.csv',
+                data: JSON.parse(JSON.stringify(allEntries)),
+                entryCount: allEntries.length
+            };
+
+            backups.unshift(backup); // Add to beginning
+
+            // Keep only MAX_BACKUPS
+            if (backups.length > MAX_BACKUPS) {
+                backups = backups.slice(0, MAX_BACKUPS);
+            }
+
+            // Save to localStorage
+            saveBackupsToStorage();
+            updateBackupList();
+            return backup;
+        }
+
+        function loadBackupsFromStorage() {
+            try {
+                const stored = localStorage.getItem('ipb_backups');
+                if (stored) {
+                    backups = JSON.parse(stored);
+                    updateBackupList();
+                }
+            } catch (e) {
+                console.error('Failed to load backups:', e);
+                showAlert('Failed to load backup history', 'warning');
+            }
+        }
+
+        function saveBackupsToStorage() {
+            try {
+                localStorage.setItem('ipb_backups', JSON.stringify(backups));
+            } catch (e) {
+                console.error('Failed to save backups:', e);
+                showAlert('Failed to save backup to storage', 'warning');
+            }
+        }
+
+        function updateBackupStatus() {
+            const statusElement = document.getElementById('backupStatus');
+            const countElement = document.getElementById('backupCount');
+
+            if (statusElement && countElement) {
+                countElement.textContent = backups.length;
+
+                if (backups.length > 0) {
+                    const lastBackup = backups[0];
+                    const date = new Date(lastBackup.timestamp);
+                    const timeAgo = getTimeAgo(date);
+                    statusElement.textContent = `Last backup: ${timeAgo}`;
+                } else {
+                    statusElement.textContent = 'No backups yet';
+                }
+            }
+        }
+
+        function updateBackupList() {
+            const listElement = document.getElementById('backupList');
+            if (!listElement) return;
+
+            if (backups.length === 0) {
+                listElement.innerHTML = '<div class="empty-backup">No backups available yet. Backups are created automatically when you save.</div>';
+                return;
+            }
+
+            listElement.innerHTML = backups.map((backup, index) => {
+                const date = new Date(backup.timestamp);
+                const formattedDate = date.toLocaleString();
+                const timeAgo = getTimeAgo(date);
+                const size = JSON.stringify(backup.data).length;
+                const sizeKB = (size / 1024).toFixed(2);
+
+                return `
+                    <div class="backup-item">
+                        <div class="backup-info">
+                            <div class="backup-header">
+                                <strong>${backup.filename}</strong>
+                                <span class="backup-badge">${backup.entryCount} entries</span>
+                            </div>
+                            <div class="backup-meta">
+                                <span>📅 ${formattedDate}</span>
+                                <span class="backup-time-ago">${timeAgo}</span>
+                                <span>💾 ${sizeKB} KB</span>
+                            </div>
+                        </div>
+                        <div class="backup-actions">
+                            <button class="btn btn-sm btn-primary" onclick="restoreBackup(${index})">RESTORE</button>
+                            <button class="btn btn-sm btn-secondary" onclick="downloadBackup(${index})">DOWNLOAD</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteBackup(${index})">DELETE</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateBackupStatus();
+        }
+
+        function restoreBackup(index) {
+            const backup = backups[index];
+            if (!backup) return;
+
+            const message = safetyMode
+                ? `Restore backup from ${new Date(backup.timestamp).toLocaleString()}?\n\nThis will replace your current data with ${backup.entryCount} entries.\nCurrent unsaved changes will be lost.`
+                : `Restore backup (${backup.entryCount} entries)?`;
+
+            if (!confirm(message)) {
+                return;
+            }
+
+            // Save current state to history before restoring
+            saveToHistory();
+
+            // Restore the backup
+            allEntries = JSON.parse(JSON.stringify(backup.data));
+            filteredEntries = [...allEntries];
+            csvFileName = backup.filename;
+
+            hasUnsavedChanges = true;
+            modifiedCount++;
+            updateStats();
+            renderTable();
+            updateLayerFilter();
+            generateNoteGroups();
+
+            showAlert(`Backup restored: ${backup.entryCount} entries loaded`, 'success');
+            toggleBackupPanel(); // Close the panel
+        }
+
+        function downloadBackup(index) {
+            const backup = backups[index];
+            if (!backup) return;
+
+            const csv = generateCSVFromData(backup.data);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+
+            const date = new Date(backup.timestamp);
+            const dateStr = date.toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            a.download = `BACKUP_${dateStr}_${backup.filename}`;
+
+            a.click();
+            window.URL.revokeObjectURL(url);
+            showAlert('Backup downloaded', 'success');
+        }
+
+        function deleteBackup(index) {
+            const backup = backups[index];
+            if (!backup) return;
+
+            const message = safetyMode
+                ? `Delete backup from ${new Date(backup.timestamp).toLocaleString()}?`
+                : 'Delete this backup?';
+
+            if (!confirm(message)) {
+                return;
+            }
+
+            backups.splice(index, 1);
+            saveBackupsToStorage();
+            updateBackupList();
+            showAlert('Backup deleted', 'warning');
+        }
+
+        function clearAllBackups() {
+            if (!confirm('Delete ALL backups? This cannot be undone!')) {
+                return;
+            }
+
+            backups = [];
+            saveBackupsToStorage();
+            updateBackupList();
+            showAlert('All backups cleared', 'warning');
+        }
+
+        function generateCSVFromData(data) {
+            let csv = 'Code,Blockname,Layer,ScaleX,ScaleY,ScaleZ,Rotation,Function,\n';
+
+            for (const entry of data) {
+                csv += `${entry.code},${entry.blockname},${entry.layer},${entry.scalex},${entry.scaley},${entry.scalez},${entry.rotation},${entry.function},${entry.notes}\n`;
+            }
+
+            return csv;
+        }
+
+        function toggleBackupPanel() {
+            const panel = document.getElementById('backupPanel');
+            const isVisible = panel.style.display !== 'none';
+            panel.style.display = isVisible ? 'none' : 'block';
+
+            if (!isVisible) {
+                updateBackupList();
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+
+            return date.toLocaleDateString();
+        }
+
         // ========================================
         // UTILITIES
         // ========================================
