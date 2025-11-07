@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPB Description Keys Manager v3.1 - Complete</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: #2a2a2a;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+        
+        .header {
+            background: #1e1e1e;
+            border-bottom: 3px solid #0078d4;
+            color: #ffffff;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-left h1 {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #0078d4;
+            letter-spacing: 1px;
+        }
+        
+        .header-left p {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: #107c10;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .header-right {
+            text-align: right;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        /* Safety Mode Toggle */
+        .safety-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #252525;
+            padding: 8px 15px;
+            border-radius: 3px;
+            margin-top: 10px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .safety-mode-toggle label {
+            font-size: 0.85em;
+            color: #999;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #3a3a3a;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: #107c10;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            top: 3px;
+            left: 3px;
+            transition: left 0.3s;
+        }
+        
+        .toggle-switch.active::after {
+            left: 29px;
+        }
+        
+        .safety-mode-label {
+            font-weight: bold;
+            color: #107c10;
+        }
+        
+        .file-section {
+            padding: 20px 30px;
+            background: #252525;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        
+        .file-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1e1e1e;
+            padding: 8px 12px;
+            border-radius: 3px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .file-input-wrapper label {
+            color: #999;
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            font-size: 0.85em;
+            color: #e0e0e0;
+            background: transparent;
+            border: none;
+        }
+        
+        .file-input-wrapper input[type="file"]::file-selector-button {
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
+        
+        .file-input-wrapper input[type="file"]::file-selector-button:hover {
+            background: #106ebe;
+        }
+        
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #1e1e1e;
+            border-radius: 3px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #d13438;
+        }
+        
+        .status-indicator.active {
+            background: #107c10;
+            box-shadow: 0 0 8px #107c10;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: #0078d4;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #106ebe;
+        }
+        
+        .btn-success {
+            background: #107c10;
+            color: white;
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #0e6b0e;
+        }
+        
+        .btn-warning {
+            background: #ca5010;
+            color: white;
+        }
+        
+        .btn-warning:hover:not(:disabled) {
+            background: #b3420e;
+        }
+        
+        .btn-danger {
+            background: #d13438;
+            color: white;
+        }
+        
+        .btn-danger:hover:not(:disabled) {
+            background: #ba2f33;
+        }
+        
+        .btn-secondary {
+            background: #3a3a3a;
+            color: #e0e0e0;
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: #4a4a4a;
+        }
+        
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 0.75em;
+        }
+        
+        .main-content {
+            padding: 20px 30px;
+        }
+        
+        .preset-notice {
+            background: #1e3a5f;
+            padding: 12px 15px;
+            border-radius: 3px;
+            border-left: 3px solid #0078d4;
+            margin-bottom: 20px;
+            font-size: 0.85em;
+        }
+        
+        .preset-notice strong {
+            color: #0078d4;
+        }
+        
+        .toolbar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .toolbar-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            background: #1e1e1e;
+            border: 1px solid #3a3a3a;
+            border-radius: 3px;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 3px;
+            text-align: center;
+            border-top: 3px solid #0078d4;
+        }
+        
+        .stat-card.warning {
+            border-top-color: #ca5010;
+        }
+        
+        .stat-card.danger {
+            border-top-color: #d13438;
+        }
+        
+        .stat-card h3 {
+            font-size: 2em;
+            color: #0078d4;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card.warning h3 {
+            color: #ca5010;
+        }
+        
+        .stat-card.danger h3 {
+            color: #d13438;
+        }
+        
+        .stat-card p {
+            font-size: 0.85em;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Layer Filter Dropdown */
+        .layer-filter {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0078d4;
+            display: none;
+        }
+        
+        .layer-filter h3 {
+            font-size: 0.9em;
+            color: #0078d4;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .layer-filter-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .layer-filter select {
+            flex: 1;
+            max-width: 300px;
+            padding: 8px 12px;
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 3px;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        
+        .layer-filter select:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+        
+        .layer-filter select option {
+            background: #2a2a2a;
+            color: #e0e0e0;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            background: #1e1e1e;
+            border-radius: 3px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+        
+        thead {
+            background: #2a2a2a;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        th {
+            padding: 12px;
+            text-align: left;
+            color: #0078d4;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-bottom: 2px solid #0078d4;
+            position: relative;
+            user-select: none;
+        }
+        
+        th.sortable {
+            cursor: pointer;
+        }
+        
+        th.sortable:hover {
+            background: #333;
+        }
+        
+        th.sorted-asc::after {
+            content: ' ▲';
+            color: #0078d4;
+        }
+        
+        th.sorted-desc::after {
+            content: ' ▼';
+            color: #0078d4;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        
+        tr {
+            transition: background 0.2s;
+        }
+        
+        tbody tr:hover {
+            background: #252525;
+        }
+        
+        tbody tr.selected {
+            background: #1e3a5f !important;
+        }
+        
+        /* Status badges for block validation */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .status-badge.valid {
+            background: rgba(16, 124, 16, 0.2);
+            color: #4db84d;
+            border: 1px solid rgba(16, 124, 16, 0.3);
+        }
+        
+        .status-badge.invalid {
+            background: rgba(232, 17, 35, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(232, 17, 35, 0.3);
+        }
+        
+        .status-badge.pending {
+            background: rgba(128, 128, 128, 0.2);
+            color: #999;
+            border: 1px solid rgba(128, 128, 128, 0.3);
+        }
+        
+        /* Color-coded grouping by notes/description */
+        tbody tr.group-color-1 { background: rgba(0, 120, 212, 0.15); }
+        tbody tr.group-color-2 { background: rgba(16, 124, 16, 0.15); }
+        tbody tr.group-color-3 { background: rgba(202, 80, 16, 0.15); }
+        tbody tr.group-color-4 { background: rgba(164, 38, 168, 0.15); }
+        tbody tr.group-color-5 { background: rgba(0, 153, 188, 0.15); }
+        tbody tr.group-color-6 { background: rgba(255, 185, 0, 0.15); }
+        tbody tr.group-color-7 { background: rgba(232, 17, 35, 0.15); }
+        tbody tr.group-color-8 { background: rgba(0, 188, 140, 0.15); }
+        
+        tbody tr.group-color-1:hover { background: rgba(0, 120, 212, 0.25); }
+        tbody tr.group-color-2:hover { background: rgba(16, 124, 16, 0.25); }
+        tbody tr.group-color-3:hover { background: rgba(202, 80, 16, 0.25); }
+        tbody tr.group-color-4:hover { background: rgba(164, 38, 168, 0.25); }
+        tbody tr.group-color-5:hover { background: rgba(0, 153, 188, 0.25); }
+        tbody tr.group-color-6:hover { background: rgba(255, 185, 0, 0.25); }
+        tbody tr.group-color-7:hover { background: rgba(232, 17, 35, 0.25); }
+        tbody tr.group-color-8:hover { background: rgba(0, 188, 140, 0.25); }
+        
+        .editable {
+            cursor: text;
+            position: relative;
+        }
+        
+        .editable:hover {
+            background: rgba(0, 120, 212, 0.1);
+        }
+        
+        .editable.editing {
+            padding: 0;
+        }
+        
+        .editable.editing input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #2a2a2a;
+            border: 2px solid #0078d4;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: inherit;
+        }
+        
+        .editable.editing input:focus {
+            outline: none;
+        }
+        
+        /* Validation warnings */
+        .field-warning {
+            position: relative;
+        }
+        
+        .field-warning::before {
+            content: '⚠️';
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9em;
+        }
+        
+        .validation-tooltip {
+            position: absolute;
+            background: #3d1e1e;
+            color: #ffcccc;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            bottom: 100%;
+            left: 0;
+            white-space: nowrap;
+            z-index: 100;
+            border: 1px solid #d13438;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-start;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #0078d4;
+            color: white;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #2a2a2a;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            background: #1e1e1e;
+            border-bottom: 2px solid #0078d4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            color: #0078d4;
+            font-size: 1.3em;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 2em;
+            cursor: pointer;
+            line-height: 0.8;
+        }
+        
+        .close-btn:hover {
+            color: #d13438;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-footer {
+            padding: 15px 25px;
+            background: #1e1e1e;
+            border-top: 1px solid #3a3a3a;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #999;
+            font-size: 0.85em;
+            text-transform: uppercase;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: #1e1e1e;
+            border: 1px solid #3a3a3a;
+            border-radius: 3px;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .checkbox-wrapper input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .alert {
+            background: #1e1e1e;
+            padding: 15px 20px;
+            border-radius: 3px;
+            border-left: 4px solid #0078d4;
+            color: #e0e0e0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease-out;
+            max-width: 400px;
+        }
+        
+        .alert.success {
+            border-left-color: #107c10;
+        }
+        
+        .alert.warning {
+            border-left-color: #ca5010;
+        }
+        
+        .alert.danger {
+            border-left-color: #d13438;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .resizer {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            cursor: col-resize;
+            user-select: none;
+        }
+        
+        .resizer:hover {
+            background: #0078d4;
+        }
+        
+        .validation-section {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            border-left: 3px solid #ca5010;
+            display: none;
+        }
+        
+        .validation-section h3 {
+            color: #ca5010;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .validation-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .validation-legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.8em;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .legend-color.missing {
+            background: #3d1e1e;
+        }
+        
+        /* Find & Replace Styles */
+        .find-replace-section {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0078d4;
+        }
+        
+        .find-replace-section h3 {
+            color: #0078d4;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .find-replace-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto auto;
+            gap: 10px;
+            align-items: end;
+        }
+        
+        .preview-section {
+            margin-top: 15px;
+            padding: 10px;
+            background: #252525;
+            border-radius: 3px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .preview-section.active {
+            display: block;
+        }
+        
+        .preview-item {
+            padding: 5px;
+            margin: 3px 0;
+            background: #1e1e1e;
+            border-radius: 2px;
+            font-size: 0.8em;
+        }
+        
+        .preview-highlight {
+            background: #ca5010;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>
+                    IPB DESCRIPTION KEYS MANAGER
+                    <span class="version-badge">v3.1 COMPLETE</span>
+                </h1>
+                <p>AutoCAD Insert Point Block Configuration Tool</p>
+            </div>
+            <div class="header-right">
+                <div class="safety-mode-toggle">
+                    <label>Safety Mode:</label>
+                    <div class="toggle-switch active" id="safetyToggle" onclick="toggleSafetyMode()"></div>
+                    <span class="safety-mode-label" id="safetyLabel">BEGINNER</span>
+                </div>
+                <p>Enhanced with Multi-Sort, Color Groups & Batch Find/Replace</p>
+            </div>
+        </div>
+        
+        <div class="file-section">
+            <div class="file-controls">
+                <div class="file-input-wrapper">
+                    <label>CSV FILE:</label>
+                    <input type="file" id="csvFile" accept=".csv">
+                </div>
+                <button class="btn btn-primary" onclick="loadCSVFile()" id="loadBtn" disabled>LOAD</button>
+                <button class="btn btn-success" onclick="saveCSVFile()" id="saveBtn" disabled>SAVE</button>
+                <button class="btn btn-warning" onclick="showImportModal()" id="importBtn" disabled>IMPORT CSV</button>
+                <button class="btn btn-secondary" onclick="exportCSV()" id="exportBtn" disabled>EXPORT FILTERED</button>
+                <button class="btn btn-secondary" onclick="undo()" id="undoBtn" disabled>↶ UNDO</button>
+                <button class="btn btn-secondary" onclick="redo()" id="redoBtn" disabled>↷ REDO</button>
+            </div>
+            
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-indicator" id="fileStatus"></div>
+                    <span id="statusText">NO FILE LOADED</span>
+                </div>
+            </div>
+            
+            <div class="preset-notice">
+                📌 <strong>Preset Configuration Active</strong><br>
+                Default CSV: <code>J:\LIB\BR\xxBLOCKS\IPB-DescriptionKeys.csv</code><br>
+                Block Library: <code>J:\LIB\BR</code> (scans all subfolders)
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Batch Find & Replace Section -->
+            <div class="find-replace-section" id="findReplaceSection" style="display: none;">
+                <h3>🔍 Batch Find & Replace</h3>
+                <div class="find-replace-controls">
+                    <div class="form-group">
+                        <label>Find Text</label>
+                        <input type="text" id="findText" placeholder="Search for...">
+                    </div>
+                    <div class="form-group">
+                        <label>Replace With</label>
+                        <input type="text" id="replaceText" placeholder="Replace with...">
+                    </div>
+                    <div class="form-group">
+                        <label>In Field</label>
+                        <select id="replaceField">
+                            <option value="all">All Fields</option>
+                            <option value="code">Code</option>
+                            <option value="blockname">Blockname</option>
+                            <option value="layer">Layer</option>
+                            <option value="rotation">Rotation</option>
+                            <option value="notes">Notes</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-warning" onclick="previewReplace()">PREVIEW</button>
+                    <button class="btn btn-success" onclick="executeReplace()" id="executeReplaceBtn" disabled>REPLACE ALL</button>
+                </div>
+                <div class="preview-section" id="previewSection">
+                    <strong>Preview changes:</strong>
+                    <div id="previewContent"></div>
+                </div>
+            </div>
+            
+            <!-- Layer Filter Dropdown -->
+            <div class="layer-filter" id="layerFilter" style="display: none;">
+                <h3>📊 Filter by Layer</h3>
+                <div class="layer-filter-controls">
+                    <select id="layerDropdown" onchange="filterByLayer()">
+                        <option value="">-- All Layers --</option>
+                    </select>
+                    <button class="btn btn-secondary btn-sm" onclick="clearLayerFilter()">CLEAR</button>
+                </div>
+            </div>
+            
+            <!-- Validation Section -->
+            <div class="validation-section" id="validationSection">
+                <h3>🔍 BLOCK VALIDATION</h3>
+                <div class="validation-controls">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <input type="text" id="blockPath" placeholder="Block Library Path (e.g., J:\LIB\BR)" value="">
+                    </div>
+                    <button class="btn btn-warning" onclick="validateBlocks()">CHECK BLOCKS</button>
+                    <button class="btn btn-secondary" onclick="clearValidation()">CLEAR</button>
+                </div>
+                <div class="validation-legend">
+                    <div class="legend-item">
+                        <div class="legend-color missing"></div>
+                        <span>Missing/Invalid Block</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toolbar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="SEARCH: Code, Blockname, Layer, Notes..." onkeyup="filterEntries()">
+                </div>
+                <div class="toolbar-section">
+                    <button class="btn btn-primary" onclick="showAddModal()" id="addBtn" disabled>ADD NEW</button>
+                    <button class="btn btn-secondary" onclick="quickDuplicateAbove()" id="quickDupBtn" disabled>⬆️ QUICK COPY</button>
+                    <button class="btn btn-secondary" onclick="toggleFindReplace()">🔍 FIND/REPLACE</button>
+                    <button class="btn btn-secondary" onclick="toggleColorGrouping()" id="colorGroupBtn">🎨 COLOR GROUPS</button>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="totalCount">0</h3>
+                    <p>Total Entries</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="filteredCount">0</h3>
+                    <p>Filtered Results</p>
+                </div>
+                <div class="stat-card warning">
+                    <h3 id="modifiedCount">0</h3>
+                    <p>Modified</p>
+                </div>
+                <div class="stat-card danger">
+                    <h3 id="missingBlockCount">0</h3>
+                    <p>Missing Blocks</p>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" onclick="addToMultiSort('code')">CODE<div class="resizer" data-column="0"></div></th>
+                            <th class="sortable" onclick="addToMultiSort('blockname')">BLOCKNAME<div class="resizer" data-column="1"></div></th>
+                            <th class="sortable" onclick="addToMultiSort('layer')">LAYER<div class="resizer" data-column="2"></div></th>
+                            <th class="sortable" onclick="addToMultiSort('scale')">SCALE (X/Y/Z)<div class="resizer" data-column="3"></div></th>
+                            <th class="sortable" onclick="addToMultiSort('rotation')">ROTATION<div class="resizer" data-column="4"></div></th>
+                            <th class="sortable" onclick="addToMultiSort('function')">FUNCTION & DESCRIPTION<div class="resizer" data-column="5"></div></th>
+                            <th class="sortable" onclick="addToMultiSort('blockStatus')">BLOCK STATUS<div class="resizer" data-column="6"></div></th>
+                            <th>ACTIONS<div class="resizer" data-column="7"></div></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <h3>NO DATA LOADED</h3>
+                                <p>Load a CSV file to begin</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Modal -->
+    <div class="modal" id="entryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">ADD NEW ENTRY</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="entryForm" onsubmit="saveEntry(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="editIndex">
+                    
+                    <div class="form-group">
+                        <label>Code *</label>
+                        <input type="text" id="code" required>
+                        <div class="validation-message" id="codeValidation"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Block Name *</label>
+                        <input type="text" id="blockname" required>
+                        <div class="validation-message" id="blocknameValidation"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Layer *</label>
+                        <input type="text" id="layer" required>
+                        <div class="validation-message" id="layerValidation"></div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Scale X *</label>
+                            <input type="text" id="scalex" value="DS" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Scale Y *</label>
+                            <input type="text" id="scaley" value="DS" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Scale Z *</label>
+                            <input type="text" id="scalez" value="DS" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rotation *</label>
+                            <input type="text" id="rotation" value="VIEW" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Function *</label>
+                            <input type="text" id="function" value="0" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">CANCEL</button>
+                    <button type="submit" class="btn btn-success">SAVE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Import Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>IMPORT CSV</h2>
+                <button class="close-btn" onclick="closeImportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select CSV File to Import</label>
+                    <input type="file" id="importFile" accept=".csv">
+                </div>
+                
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="skipDuplicates" checked>
+                    <label for="skipDuplicates">Skip duplicate codes (recommended)</label>
+                </div>
+                
+                <p style="color: #999; font-size: 0.85em; margin-top: 15px;">
+                    Import will add entries from the selected CSV file to your current dataset.
+                    Duplicate codes will be skipped if the checkbox is enabled.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeImportModal()">CANCEL</button>
+                <button class="btn btn-warning" onclick="importCSV()">IMPORT</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alert-container" id="alertContainer"></div>
+    
+    <script>
+        // ========================================
+        // PRESET CONFIGURATION
+        // ========================================
+        const PRESET_CONFIG = {
+            defaultCSVPath: 'J:\\LIB\\BR\\xxBLOCKS\\IPB-DescriptionKeys.csv',
+            blockLibraryPath: 'J:\\LIB\\BR',
+            autoLoadOnStartup: true,
+            showPathInfo: true
+        };
+        
+        let allEntries = [];
+        let filteredEntries = [];
+        let csvFileName = '';
+        let modifiedCount = 0;
+        let selectedRow = null;
+        let editingCell = null;
+        let currentSort = []; // Array of {column, direction} for multi-column sort
+        let missingBlocks = new Set();
+        let safetyMode = true; // true = beginner, false = expert
+        let colorGroupingEnabled = false;
+        let noteGroups = new Map(); // Map notes to color group numbers
+        
+        // Function descriptions (0-5) from IPB.LSP
+        const functionDescriptions = {
+            '0': 'Standard insert (no special action)',
+            '1': 'Label point structure (adds description to leader)',
+            '2': 'Delete after insert (temporary placement)',
+            '3': 'Burst after insert (explode block)',
+            '4': 'Edit attribute with description + burst',
+            '5': 'Edit attribute with description & elevation + burst'
+        };
+        
+        // Undo/Redo system
+        let historyStack = [];
+        let historyIndex = -1;
+        const MAX_HISTORY = 50;
+        
+        // Track unsaved changes
+        let hasUnsavedChanges = false;
+        
+        // Column resizing
+        let isResizing = false;
+        let currentColumn = null;
+        let startX = 0;
+        let startWidth = 0;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFileStatus(false);
+            setupColumnResizing();
+            setupKeyboardShortcuts();
+            setupBeforeUnload();
+            setupRealTimeValidation();
+            
+            // Set preset block library path
+            if (PRESET_CONFIG.blockLibraryPath) {
+                document.getElementById('blockPath').value = PRESET_CONFIG.blockLibraryPath;
+            }
+        });
+        
+        // ========================================
+        // SAFETY MODE TOGGLE
+        // ========================================
+        function toggleSafetyMode() {
+            safetyMode = !safetyMode;
+            const toggle = document.getElementById('safetyToggle');
+            const label = document.getElementById('safetyLabel');
+            
+            if (safetyMode) {
+                toggle.classList.add('active');
+                label.textContent = 'BEGINNER';
+                label.style.color = '#107c10';
+                showAlert('Safety Mode ON - Extra confirmations enabled', 'success');
+            } else {
+                toggle.classList.remove('active');
+                label.textContent = 'EXPERT';
+                label.style.color = '#ca5010';
+                showAlert('Expert Mode ON - Fewer confirmations', 'warning');
+            }
+        }
+        
+        // ========================================
+        // MULTI-COLUMN SORT
+        // ========================================
+        function addToMultiSort(column) {
+            // Find if this column is already in sort array
+            const existingIndex = currentSort.findIndex(s => s.column === column);
+            
+            if (existingIndex >= 0) {
+                // Cycle through: asc -> desc -> remove
+                const current = currentSort[existingIndex];
+                if (current.direction === 'asc') {
+                    currentSort[existingIndex].direction = 'desc';
+                } else {
+                    // Remove from sort
+                    currentSort.splice(existingIndex, 1);
+                }
+            } else {
+                // Add new sort column
+                currentSort.push({ column, direction: 'asc' });
+            }
+            
+            applyMultiSort();
+            updateSortHeaders();
+            renderTable();
+        }
+        
+        function applyMultiSort() {
+            if (currentSort.length === 0) {
+                // Reset to original order
+                filteredEntries = allEntries.filter(entry => 
+                    filteredEntries.some(fe => fe === entry)
+                );
+                return;
+            }
+            
+            filteredEntries.sort((a, b) => {
+                for (const sort of currentSort) {
+                    let aVal, bVal;
+                    
+                    if (sort.column === 'scale') {
+                        aVal = `${a.scalex}-${a.scaley}-${a.scalez}`;
+                        bVal = `${b.scalex}-${b.scaley}-${b.scalez}`;
+                    } else if (sort.column === 'blockStatus') {
+                        // Convert status to sortable value
+                        const getStatusValue = (entry) => {
+                            if (missingBlocks.has(entry.code.toLowerCase())) return 2; // Invalid (worst)
+                            if (missingBlocks.size > 0) return 0; // Valid (best)
+                            return 1; // Not checked (middle)
+                        };
+                        aVal = getStatusValue(a);
+                        bVal = getStatusValue(b);
+                    } else {
+                        aVal = a[sort.column];
+                        bVal = b[sort.column];
+                    }
+                    
+                    // Convert to strings for comparison (unless already numeric from blockStatus)
+                    if (sort.column !== 'blockStatus') {
+                        aVal = String(aVal).toLowerCase();
+                        bVal = String(bVal).toLowerCase();
+                        
+                        // Try numeric comparison
+                        const aNum = parseFloat(aVal);
+                        const bNum = parseFloat(bVal);
+                        if (!isNaN(aNum) && !isNaN(bNum)) {
+                            aVal = aNum;
+                            bVal = bNum;
+                        }
+                    }
+                    
+                    const comparison = sort.direction === 'asc' 
+                        ? (aVal > bVal ? 1 : aVal < bVal ? -1 : 0)
+                        : (aVal < bVal ? 1 : aVal > bVal ? -1 : 0);
+                    
+                    if (comparison !== 0) {
+                        return comparison;
+                    }
+                }
+                return 0;
+            });
+        }
+        
+        function updateSortHeaders() {
+            // Clear all sort indicators
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.className = 'sortable';
+            });
+            
+            // Add indicators for sorted columns
+            currentSort.forEach((sort, index) => {
+                const th = document.querySelector(`th.sortable[onclick*="${sort.column}"]`);
+                if (th) {
+                    const suffix = sort.direction === 'asc' ? '▲' : '▼';
+                    const badge = index + 1;
+                    if (!th.textContent.includes(suffix)) {
+                        th.classList.add(`sorted-${sort.direction}`);
+                        if (currentSort.length > 1) {
+                            const originalText = th.textContent.split('▲')[0].split('▼')[0];
+                            th.innerHTML = `${originalText} ${suffix}<sup>${badge}</sup><div class="resizer" data-column="${th.querySelector('.resizer').dataset.column}"></div>`;
+                        }
+                    }
+                }
+            });
+        }
+        
+        // ========================================
+        // COLOR-CODED GROUPING
+        // ========================================
+        function toggleColorGrouping() {
+            colorGroupingEnabled = !colorGroupingEnabled;
+            const btn = document.getElementById('colorGroupBtn');
+            
+            if (colorGroupingEnabled) {
+                btn.textContent = '🎨 GROUPS ON';
+                btn.style.background = '#107c10';
+                generateNoteGroups();
+                showAlert('Color grouping enabled - Entries grouped by code field', 'success');
+            } else {
+                btn.textContent = '🎨 COLOR GROUPS';
+                btn.style.background = '#3a3a3a';
+                showAlert('Color grouping disabled', 'info');
+            }
+            
+            renderTable();
+        }
+        
+        function generateNoteGroups() {
+            noteGroups.clear();
+            let groupCounter = 1;
+            const maxGroups = 8; // We have 8 color classes
+            
+            // Group entries by CODE field (without wildcards for cleaner grouping)
+            const codeMap = new Map();
+            allEntries.forEach(entry => {
+                // Remove wildcard and trim for grouping
+                const baseCode = entry.code.replace(/\*/g, '').toLowerCase().trim();
+                if (baseCode) {
+                    if (!codeMap.has(baseCode)) {
+                        codeMap.set(baseCode, []);
+                    }
+                    codeMap.get(baseCode).push(entry);
+                }
+            });
+            
+            // Assign colors to groups with more than 1 entry
+            Array.from(codeMap.entries())
+                .filter(([code, entries]) => entries.length > 1)
+                .sort((a, b) => b[1].length - a[1].length) // Sort by size, largest first
+                .forEach(([code, entries]) => {
+                    noteGroups.set(code, ((groupCounter - 1) % maxGroups) + 1);
+                    groupCounter++;
+                });
+        }
+        
+        function getColorGroupClass(entry) {
+            if (!colorGroupingEnabled) return '';
+            
+            // Remove wildcard and trim for matching
+            const baseCode = entry.code.replace(/\*/g, '').toLowerCase().trim();
+            if (!baseCode) return '';
+            
+            const groupNum = noteGroups.get(baseCode);
+            return groupNum ? `group-color-${groupNum}` : '';
+        }
+        
+        // ========================================
+        // LAYER FILTER DROPDOWN
+        // ========================================
+        function updateLayerFilter() {
+            const layerMap = new Map();
+            
+            allEntries.forEach(entry => {
+                const layer = entry.layer;
+                layerMap.set(layer, (layerMap.get(layer) || 0) + 1);
+            });
+            
+            if (layerMap.size === 0) {
+                document.getElementById('layerFilter').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('layerFilter').style.display = 'block';
+            
+            const dropdown = document.getElementById('layerDropdown');
+            const currentValue = dropdown.value;
+            
+            // Sort layers by count (descending) then alphabetically
+            const sorted = Array.from(layerMap.entries()).sort((a, b) => {
+                if (b[1] !== a[1]) return b[1] - a[1]; // Sort by count
+                return a[0].localeCompare(b[0]); // Then alphabetically
+            });
+            
+            // Rebuild dropdown options
+            dropdown.innerHTML = '<option value="">-- All Layers --</option>' +
+                sorted.map(([layer, count]) => 
+                    `<option value="${escapeHtml(layer)}">${escapeHtml(layer)} (${count})</option>`
+                ).join('');
+            
+            // Restore previous selection if it still exists
+            if (currentValue && layerMap.has(currentValue)) {
+                dropdown.value = currentValue;
+            }
+        }
+        
+        function filterByLayer() {
+            const selectedLayer = document.getElementById('layerDropdown').value;
+            
+            if (!selectedLayer) {
+                // Show all
+                document.getElementById('searchInput').value = '';
+                filterEntries();
+            } else {
+                // Filter to selected layer
+                document.getElementById('searchInput').value = selectedLayer;
+                filterEntries();
+                showAlert(`Filtered to layer: ${selectedLayer}`, 'info');
+            }
+        }
+        
+        function clearLayerFilter() {
+            document.getElementById('layerDropdown').value = '';
+            document.getElementById('searchInput').value = '';
+            filterEntries();
+            showAlert('Layer filter cleared', 'info');
+        }
+        
+        // ========================================
+        // BATCH FIND & REPLACE
+        // ========================================
+        function toggleFindReplace() {
+            const section = document.getElementById('findReplaceSection');
+            const isVisible = section.style.display !== 'none';
+            section.style.display = isVisible ? 'none' : 'block';
+            
+            if (!isVisible) {
+                document.getElementById('findText').focus();
+            }
+        }
+        
+        function previewReplace() {
+            const findText = document.getElementById('findText').value;
+            const replaceText = document.getElementById('replaceText').value;
+            const field = document.getElementById('replaceField').value;
+            
+            if (!findText) {
+                showAlert('Please enter text to find', 'warning');
+                return;
+            }
+            
+            const previewSection = document.getElementById('previewSection');
+            const previewContent = document.getElementById('previewContent');
+            const matches = [];
+            
+            allEntries.forEach((entry, index) => {
+                const fields = field === 'all' 
+                    ? ['code', 'blockname', 'layer', 'rotation', 'notes']
+                    : [field];
+                
+                fields.forEach(f => {
+                    const value = entry[f];
+                    if (value && value.toLowerCase().includes(findText.toLowerCase())) {
+                        matches.push({
+                            index,
+                            field: f,
+                            oldValue: value,
+                            newValue: value.replace(new RegExp(findText, 'gi'), replaceText)
+                        });
+                    }
+                });
+            });
+            
+            if (matches.length === 0) {
+                previewContent.innerHTML = '<p style="color: #999;">No matches found</p>';
+                document.getElementById('executeReplaceBtn').disabled = true;
+            } else {
+                previewContent.innerHTML = matches.slice(0, 20).map(m => 
+                    `<div class="preview-item">
+                        <strong>Row ${m.index + 1}</strong> (${m.field}): 
+                        <span style="text-decoration: line-through; color: #999;">${escapeHtml(m.oldValue)}</span>
+                        → <span class="preview-highlight">${escapeHtml(m.newValue)}</span>
+                    </div>`
+                ).join('') + (matches.length > 20 ? `<p style="color: #999; margin-top: 10px;">...and ${matches.length - 20} more</p>` : '');
+                
+                document.getElementById('executeReplaceBtn').disabled = false;
+                document.getElementById('executeReplaceBtn').textContent = `REPLACE ${matches.length} ITEMS`;
+            }
+            
+            previewSection.classList.add('active');
+        }
+        
+        function executeReplace() {
+            if (safetyMode) {
+                if (!confirm('Are you sure you want to replace all matched items? This can be undone with Ctrl+Z.')) {
+                    return;
+                }
+            }
+            
+            const findText = document.getElementById('findText').value;
+            const replaceText = document.getElementById('replaceText').value;
+            const field = document.getElementById('replaceField').value;
+            
+            saveToHistory();
+            
+            let replaceCount = 0;
+            
+            allEntries.forEach(entry => {
+                const fields = field === 'all' 
+                    ? ['code', 'blockname', 'layer', 'rotation', 'notes']
+                    : [field];
+                
+                fields.forEach(f => {
+                    const value = entry[f];
+                    if (value && value.toLowerCase().includes(findText.toLowerCase())) {
+                        entry[f] = value.replace(new RegExp(findText, 'gi'), replaceText);
+                        replaceCount++;
+                    }
+                });
+            });
+            
+            modifiedCount += replaceCount;
+            hasUnsavedChanges = true;
+            filteredEntries = [...allEntries];
+            updateStats();
+            renderTable();
+            
+            // Clear preview
+            document.getElementById('previewSection').classList.remove('active');
+            document.getElementById('findText').value = '';
+            document.getElementById('replaceText').value = '';
+            
+            showAlert(`Replaced ${replaceCount} items`, 'success');
+        }
+        
+        // ========================================
+        // QUICK DUPLICATE FROM ROW ABOVE
+        // ========================================
+        function quickDuplicateAbove() {
+            if (selectedRow === null || selectedRow === 0) {
+                showAlert('Select a row first (use arrow keys)', 'warning');
+                return;
+            }
+            
+            const sourceEntry = filteredEntries[selectedRow];
+            const newEntry = { ...sourceEntry };
+            
+            // Open modal with pre-filled data
+            document.getElementById('modalTitle').textContent = 'QUICK COPY - Edit as needed';
+            document.getElementById('editIndex').value = '';
+            document.getElementById('code').value = newEntry.code;
+            document.getElementById('blockname').value = newEntry.blockname;
+            document.getElementById('layer').value = newEntry.layer;
+            document.getElementById('scalex').value = newEntry.scalex;
+            document.getElementById('scaley').value = newEntry.scaley;
+            document.getElementById('scalez').value = newEntry.scalez;
+            document.getElementById('rotation').value = newEntry.rotation;
+            document.getElementById('function').value = newEntry.function;
+            document.getElementById('notes').value = newEntry.notes;
+            document.getElementById('entryModal').classList.add('active');
+            
+            // Focus on code field for quick editing
+            setTimeout(() => {
+                document.getElementById('code').select();
+            }, 100);
+            
+            showAlert('Copied from row above - Edit and save', 'info');
+        }
+        
+        // ========================================
+        // REAL-TIME VALIDATION
+        // ========================================
+        function setupRealTimeValidation() {
+            const fields = ['code', 'blockname', 'layer', 'scalex', 'scaley', 'scalez', 'rotation', 'function'];
+            
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        validateField(fieldId, this.value);
+                    });
+                }
+            });
+        }
+        
+        function validateField(fieldId, value) {
+            let isValid = true;
+            let message = '';
+            
+            switch(fieldId) {
+                case 'code':
+                    if (value.trim().length === 0) {
+                        isValid = false;
+                        message = '⚠️ Code cannot be empty';
+                    }
+                    break;
+                    
+                case 'blockname':
+                    if (value.trim().length === 0) {
+                        isValid = false;
+                        message = '⚠️ Blockname cannot be empty';
+                    } else if (value.toLowerCase() === 'null' || value.toLowerCase() === 'undefined') {
+                        isValid = false;
+                        message = '⚠️ Invalid blockname';
+                    }
+                    break;
+                    
+                case 'layer':
+                    if (value.trim().length === 0) {
+                        isValid = false;
+                        message = '⚠️ Layer cannot be empty';
+                    }
+                    break;
+                    
+                case 'scalex':
+                case 'scaley':
+                case 'scalez':
+                    if (value !== 'DS' && isNaN(parseFloat(value))) {
+                        isValid = false;
+                        message = '⚠️ Must be "DS" or a number';
+                    }
+                    break;
+                    
+                case 'rotation':
+                    if (value !== 'VIEW' && isNaN(parseFloat(value))) {
+                        isValid = false;
+                        message = '⚠️ Must be "VIEW" or a number';
+                    }
+                    break;
+                    
+                case 'function':
+                    const funcNum = parseInt(value);
+                    if (isNaN(funcNum) || funcNum < 0 || funcNum > 5) {
+                        isValid = false;
+                        message = '⚠️ Function must be 0-5';
+                    }
+                    break;
+            }
+            
+            // Show validation message
+            const validationDiv = document.getElementById(fieldId + 'Validation');
+            if (validationDiv) {
+                if (!isValid && message) {
+                    validationDiv.textContent = message;
+                    validationDiv.style.color = '#d13438';
+                    validationDiv.style.fontSize = '0.75em';
+                    validationDiv.style.marginTop = '3px';
+                } else {
+                    validationDiv.textContent = '';
+                }
+            }
+            
+            return isValid;
+        }
+        
+        // ========================================
+        // FILE OPERATIONS
+        // ========================================
+        function checkExactDuplicate(entry, editIndex = -1) {
+            for (let i = 0; i < allEntries.length; i++) {
+                if (i === editIndex) continue;
+                
+                const existing = allEntries[i];
+                if (existing.code.toLowerCase() === entry.code.toLowerCase() &&
+                    existing.blockname.toLowerCase() === entry.blockname.toLowerCase() &&
+                    existing.layer.toLowerCase() === entry.layer.toLowerCase() &&
+                    existing.scalex === entry.scalex &&
+                    existing.scaley === entry.scaley &&
+                    existing.scalez === entry.scalez &&
+                    existing.rotation.toLowerCase() === entry.rotation.toLowerCase() &&
+                    existing.function === entry.function) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        async function validateBlocks() {
+            const blockPath = document.getElementById('blockPath').value.trim();
+            
+            if (!blockPath) {
+                showAlert('Please enter a block library path', 'warning');
+                return;
+            }
+            
+            showAlert('Running basic validation checks...', 'info');
+            
+            missingBlocks.clear();
+            
+            let issueCount = 0;
+            
+            allEntries.forEach(entry => {
+                const blockname = entry.blockname.toLowerCase().trim();
+                const code = entry.code.toLowerCase();
+                
+                if (blockname === '' || 
+                    blockname === 'null' || 
+                    blockname === 'undefined' ||
+                    blockname === 'n/a' ||
+                    blockname.length < 2) {
+                    missingBlocks.add(code);
+                    issueCount++;
+                }
+            });
+            
+            document.getElementById('missingBlockCount').textContent = missingBlocks.size;
+            renderTable();
+            
+            if (missingBlocks.size === 0) {
+                showAlert('Basic validation passed! All blocks have valid names.', 'success');
+            } else {
+                showAlert(`Found ${missingBlocks.size} entries with potential issues (highlighted in red)`, 'warning');
+            }
+        }
+        
+        function clearValidation() {
+            missingBlocks.clear();
+            document.getElementById('missingBlockCount').textContent = '0';
+            renderTable();
+            showAlert('Validation cleared', 'info');
+        }
+        
+        function updateFileStatus(loaded) {
+            const indicator = document.getElementById('fileStatus');
+            const statusText = document.getElementById('statusText');
+            
+            if (loaded) {
+                indicator.className = 'status-indicator active';
+                statusText.textContent = 'FILE LOADED';
+            } else {
+                indicator.className = 'status-indicator inactive';
+                statusText.textContent = 'NO FILE LOADED';
+            }
+            
+            document.getElementById('loadBtn').disabled = !document.getElementById('csvFile').files.length;
+            document.getElementById('saveBtn').disabled = !loaded;
+            document.getElementById('importBtn').disabled = !loaded;
+            document.getElementById('exportBtn').disabled = !loaded;
+            document.getElementById('addBtn').disabled = !loaded;
+            document.getElementById('quickDupBtn').disabled = !loaded || selectedRow === null;
+        }
+        
+        document.getElementById('csvFile').addEventListener('change', function() {
+            updateFileStatus(false);
+        });
+        
+        function loadCSVFile() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('Please select a CSV file', 'warning');
+                return;
+            }
+            
+            csvFileName = file.name;
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                parseCSV(content);
+                updateFileStatus(true);
+                showAlert('CSV file loaded successfully', 'success');
+                
+                saveToHistory();
+                hasUnsavedChanges = false;
+                
+                document.getElementById('validationSection').style.display = 'block';
+                document.getElementById('findReplaceSection').style.display = 'block';
+                updateLayerFilter();
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function parseCSV(content) {
+            const lines = content.split('\n');
+            allEntries = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line) {
+                    const parts = line.split(',');
+                    if (parts.length >= 8) {
+                        allEntries.push({
+                            code: parts[0].trim(),
+                            blockname: parts[1].trim(),
+                            layer: parts[2].trim(),
+                            scalex: parts[3].trim(),
+                            scaley: parts[4].trim(),
+                            scalez: parts[5].trim(),
+                            rotation: parts[6].trim(),
+                            function: parts[7].trim(),
+                            notes: parts[8] ? parts[8].trim() : ''
+                        });
+                    }
+                }
+            }
+            
+            filteredEntries = [...allEntries];
+            updateStats();
+            renderTable();
+            generateNoteGroups();
+        }
+        
+        function showImportModal() {
+            document.getElementById('importModal').classList.add('active');
+        }
+        
+        function closeImportModal() {
+            document.getElementById('importModal').classList.remove('active');
+            document.getElementById('importFile').value = '';
+        }
+        
+        function importCSV() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('Please select a file to import', 'warning');
+                return;
+            }
+            
+            const skipDuplicates = document.getElementById('skipDuplicates').checked;
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const lines = content.split('\n');
+                let importedCount = 0;
+                let skippedCount = 0;
+                
+                const existingCodes = new Set(allEntries.map(e => e.code.toLowerCase()));
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        const parts = line.split(',');
+                        if (parts.length >= 8) {
+                            const code = parts[0].trim();
+                            
+                            if (skipDuplicates && existingCodes.has(code.toLowerCase())) {
+                                skippedCount++;
+                                continue;
+                            }
+                            
+                            allEntries.push({
+                                code: code,
+                                blockname: parts[1].trim(),
+                                layer: parts[2].trim(),
+                                scalex: parts[3].trim(),
+                                scaley: parts[4].trim(),
+                                scalez: parts[5].trim(),
+                                rotation: parts[6].trim(),
+                                function: parts[7].trim(),
+                                notes: parts[8] ? parts[8].trim() : ''
+                            });
+                            importedCount++;
+                        }
+                    }
+                }
+                
+                filteredEntries = [...allEntries];
+                
+                saveToHistory();
+                modifiedCount += importedCount;
+                hasUnsavedChanges = true;
+                updateStats();
+                renderTable();
+                updateLayerFilter();
+                closeImportModal();
+                
+                let message = `Import complete: ${importedCount} entries added`;
+                if (skippedCount > 0) {
+                    message += `, ${skippedCount} duplicates skipped`;
+                }
+                showAlert(message, 'success');
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function saveCSVFile() {
+            if (safetyMode && hasUnsavedChanges) {
+                if (!confirm(`You have ${modifiedCount} unsaved changes. Save to file?`)) {
+                    return;
+                }
+            }
+            
+            const csv = generateCSV();
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = csvFileName || 'IPB-DescriptionKeys.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+            modifiedCount = 0;
+            hasUnsavedChanges = false;
+            updateStats();
+            showAlert('CSV file saved successfully', 'success');
+        }
+        
+        function generateCSV() {
+            let csv = 'Code,Blockname,Layer,ScaleX,ScaleY,ScaleZ,Rotation,Function,\n';
+            
+            for (const entry of allEntries) {
+                csv += `${entry.code},${entry.blockname},${entry.layer},${entry.scalex},${entry.scaley},${entry.scalez},${entry.rotation},${entry.function},${entry.notes}\n`;
+            }
+            
+            return csv;
+        }
+        
+        function exportCSV() {
+            let csv = 'Code,Blockname,Layer,ScaleX,ScaleY,ScaleZ,Rotation,Function,\n';
+            
+            for (const entry of filteredEntries) {
+                csv += `${entry.code},${entry.blockname},${entry.layer},${entry.scalex},${entry.scaley},${entry.scalez},${entry.rotation},${entry.function},${entry.notes}\n`;
+            }
+            
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `IPB_Export_${timestamp}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            showAlert(`Exported ${filteredEntries.length} filtered entries`, 'success');
+        }
+        
+        function filterEntries() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredEntries = allEntries.filter(entry => 
+                entry.code.toLowerCase().includes(searchTerm) ||
+                entry.blockname.toLowerCase().includes(searchTerm) ||
+                entry.layer.toLowerCase().includes(searchTerm) ||
+                entry.notes.toLowerCase().includes(searchTerm)
+            );
+            updateStats();
+            renderTable();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalCount').textContent = allEntries.length;
+            document.getElementById('filteredCount').textContent = filteredEntries.length;
+            document.getElementById('modifiedCount').textContent = modifiedCount;
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            
+            if (filteredEntries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><h3>NO ENTRIES FOUND</h3><p>Try adjusting your search filter</p></td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filteredEntries.map((entry, index) => {
+                const actualIndex = allEntries.indexOf(entry);
+                const isMissing = missingBlocks.has(entry.code.toLowerCase());
+                
+                // Determine block status badge
+                let statusBadge = '';
+                if (isMissing) {
+                    statusBadge = '<span class="status-badge invalid">✗ INVALID</span>';
+                } else if (missingBlocks.size > 0) {
+                    // Validation was run and this one passed
+                    statusBadge = '<span class="status-badge valid">✓ VALID</span>';
+                } else {
+                    // Validation not run yet
+                    statusBadge = '<span class="status-badge pending">- NOT CHECKED</span>';
+                }
+                
+                // Get function description
+                const funcNum = entry.function || '0';
+                const funcDesc = functionDescriptions[funcNum] || 'Unknown';
+                const funcDisplay = `<span class="badge">Fn ${escapeHtml(funcNum)}</span> ${funcDesc}`;
+                
+                // Get color group class (no longer using missing-block class)
+                let rowClass = getColorGroupClass(entry);
+                
+                if (index === selectedRow) {
+                    rowClass += ' selected';
+                }
+                
+                return `
+                    <tr class="${rowClass}" onclick="selectRow(${index})">
+                        <td class="editable" data-field="code" data-index="${actualIndex}" ondblclick="startInlineEdit(this)"><strong>${escapeHtml(entry.code)}</strong></td>
+                        <td class="editable" data-field="blockname" data-index="${actualIndex}" ondblclick="startInlineEdit(this)">${escapeHtml(entry.blockname)}</td>
+                        <td class="editable" data-field="layer" data-index="${actualIndex}" ondblclick="startInlineEdit(this)">${escapeHtml(entry.layer)}</td>
+                        <td>${escapeHtml(entry.scalex)} / ${escapeHtml(entry.scaley)} / ${escapeHtml(entry.scalez)}</td>
+                        <td class="editable" data-field="rotation" data-index="${actualIndex}" ondblclick="startInlineEdit(this)">${escapeHtml(entry.rotation)}</td>
+                        <td>${funcDisplay}</td>
+                        <td>${statusBadge}</td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); editEntry(${actualIndex})">EDIT</button>
+                            <button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); duplicateEntry(${actualIndex})">COPY</button>
+                            <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteEntry(${actualIndex})">DEL</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            updateLayerFilter();
+        }
+        
+        function selectRow(index) {
+            selectedRow = index;
+            document.getElementById('quickDupBtn').disabled = false;
+            renderTable();
+        }
+        
+        function startInlineEdit(cell) {
+            if (editingCell) {
+                saveInlineEdit();
+            }
+            
+            editingCell = cell;
+            const field = cell.dataset.field;
+            const index = parseInt(cell.dataset.index);
+            const currentValue = allEntries[index][field];
+            
+            cell.classList.add('editing');
+            cell.innerHTML = `<input type="text" value="${escapeHtml(currentValue)}" onblur="saveInlineEdit()" onkeydown="handleInlineEditKey(event)">`;
+            
+            const input = cell.querySelector('input');
+            input.focus();
+            input.select();
+        }
+        
+        function handleInlineEditKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                saveInlineEdit();
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                cancelInlineEdit();
+            }
+        }
+        
+        function saveInlineEdit() {
+            if (!editingCell) return;
+            
+            const input = editingCell.querySelector('input');
+            if (!input) return;
+            
+            const field = editingCell.dataset.field;
+            const index = parseInt(editingCell.dataset.index);
+            const newValue = input.value.trim();
+            
+            if (newValue !== allEntries[index][field]) {
+                saveToHistory();
+                allEntries[index][field] = newValue;
+                modifiedCount++;
+                hasUnsavedChanges = true;
+                
+                updateStats();
+                if (colorGroupingEnabled) {
+                    generateNoteGroups();
+                }
+                showAlert('Entry updated', 'success');
+            }
+            
+            editingCell.classList.remove('editing');
+            editingCell = null;
+            renderTable();
+        }
+        
+        function cancelInlineEdit() {
+            if (!editingCell) return;
+            
+            editingCell.classList.remove('editing');
+            editingCell = null;
+            renderTable();
+        }
+        
+        function showAddModal() {
+            document.getElementById('modalTitle').textContent = 'ADD NEW ENTRY';
+            document.getElementById('entryForm').reset();
+            document.getElementById('editIndex').value = '';
+            document.getElementById('scalex').value = 'DS';
+            document.getElementById('scaley').value = 'DS';
+            document.getElementById('scalez').value = 'DS';
+            document.getElementById('rotation').value = 'VIEW';
+            document.getElementById('function').value = '0';
+            document.getElementById('entryModal').classList.add('active');
+        }
+        
+        function editEntry(index) {
+            const entry = allEntries[index];
+            document.getElementById('modalTitle').textContent = 'EDIT ENTRY';
+            document.getElementById('editIndex').value = index;
+            document.getElementById('code').value = entry.code;
+            document.getElementById('blockname').value = entry.blockname;
+            document.getElementById('layer').value = entry.layer;
+            document.getElementById('scalex').value = entry.scalex;
+            document.getElementById('scaley').value = entry.scaley;
+            document.getElementById('scalez').value = entry.scalez;
+            document.getElementById('rotation').value = entry.rotation;
+            document.getElementById('function').value = entry.function;
+            document.getElementById('entryModal').classList.add('active');
+        }
+        
+        function duplicateEntry(index) {
+            const entry = {...allEntries[index]};
+            document.getElementById('modalTitle').textContent = 'DUPLICATE ENTRY';
+            document.getElementById('editIndex').value = '';
+            document.getElementById('code').value = entry.code;
+            document.getElementById('blockname').value = entry.blockname;
+            document.getElementById('layer').value = entry.layer;
+            document.getElementById('scalex').value = entry.scalex;
+            document.getElementById('scaley').value = entry.scaley;
+            document.getElementById('scalez').value = entry.scalez;
+            document.getElementById('rotation').value = entry.rotation;
+            document.getElementById('function').value = entry.function;
+            document.getElementById('entryModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('entryModal').classList.remove('active');
+        }
+        
+        function saveEntry(event) {
+            event.preventDefault();
+            
+            const editIndex = document.getElementById('editIndex').value;
+            const entry = {
+                code: document.getElementById('code').value.trim(),
+                blockname: document.getElementById('blockname').value.trim(),
+                layer: document.getElementById('layer').value.trim(),
+                scalex: document.getElementById('scalex').value.trim(),
+                scaley: document.getElementById('scaley').value.trim(),
+                scalez: document.getElementById('scalez').value.trim(),
+                rotation: document.getElementById('rotation').value.trim(),
+                function: document.getElementById('function').value.trim(),
+                notes: editIndex !== '' ? allEntries[parseInt(editIndex)].notes : '' // Preserve existing notes
+            };
+            
+            if (checkExactDuplicate(entry, editIndex === '' ? -1 : parseInt(editIndex))) {
+                showAlert('⚠️ Cannot save: This exact entry already exists!\n(All fields match an existing entry)', 'danger');
+                return;
+            }
+            
+            saveToHistory();
+            
+            if (editIndex === '') {
+                allEntries.push(entry);
+                showAlert('Entry added successfully', 'success');
+            } else {
+                allEntries[parseInt(editIndex)] = entry;
+                showAlert('Entry updated successfully', 'success');
+            }
+            
+            modifiedCount++;
+            hasUnsavedChanges = true;
+            filteredEntries = [...allEntries];
+            updateStats();
+            if (colorGroupingEnabled) {
+                generateNoteGroups();
+            }
+            renderTable();
+            closeModal();
+        }
+        
+        function deleteEntry(index) {
+            const entry = allEntries[index];
+            const message = safetyMode 
+                ? `Are you sure you want to delete entry:\n\nCode: ${entry.code}\nBlockname: ${entry.blockname}\nLayer: ${entry.layer}\n\nThis can be undone with Ctrl+Z.`
+                : `Delete ${entry.code}?`;
+            
+            if (!confirm(message)) {
+                return;
+            }
+            
+            saveToHistory();
+            allEntries.splice(index, 1);
+            filteredEntries = allEntries.filter(e => 
+                filteredEntries.some(fe => fe === e)
+            );
+            modifiedCount++;
+            hasUnsavedChanges = true;
+            updateStats();
+            renderTable();
+            showAlert('Entry deleted', 'warning');
+        }
+        
+        // ========================================
+        // UNDO/REDO SYSTEM
+        // ========================================
+        function saveToHistory() {
+            if (historyIndex < historyStack.length - 1) {
+                historyStack = historyStack.slice(0, historyIndex + 1);
+            }
+            
+            historyStack.push(JSON.parse(JSON.stringify(allEntries)));
+            
+            if (historyStack.length > MAX_HISTORY) {
+                historyStack.shift();
+            } else {
+                historyIndex++;
+            }
+            
+            updateUndoRedoButtons();
+        }
+        
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                allEntries = JSON.parse(JSON.stringify(historyStack[historyIndex]));
+                filteredEntries = [...allEntries];
+                updateStats();
+                renderTable();
+                updateUndoRedoButtons();
+                showAlert('Undo successful', 'info');
+            }
+        }
+        
+        function redo() {
+            if (historyIndex < historyStack.length - 1) {
+                historyIndex++;
+                allEntries = JSON.parse(JSON.stringify(historyStack[historyIndex]));
+                filteredEntries = [...allEntries];
+                updateStats();
+                renderTable();
+                updateUndoRedoButtons();
+                showAlert('Redo successful', 'info');
+            }
+        }
+        
+        function updateUndoRedoButtons() {
+            document.getElementById('undoBtn').disabled = historyIndex <= 0;
+            document.getElementById('redoBtn').disabled = historyIndex >= historyStack.length - 1;
+        }
+        
+        // ========================================
+        // KEYBOARD SHORTCUTS
+        // ========================================
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+Z - Undo
+                if (e.ctrlKey && e.key === 'z' && !editingCell) {
+                    e.preventDefault();
+                    undo();
+                }
+                
+                // Ctrl+Y - Redo
+                if (e.ctrlKey && e.key === 'y' && !editingCell) {
+                    e.preventDefault();
+                    redo();
+                }
+                
+                // Escape - Cancel inline edit or close modal
+                if (e.key === 'Escape') {
+                    if (editingCell) {
+                        cancelInlineEdit();
+                    } else if (document.getElementById('entryModal').classList.contains('active')) {
+                        closeModal();
+                    }
+                }
+                
+                // Arrow keys for navigation
+                if (!editingCell && filteredEntries.length > 0) {
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        if (selectedRow === null) {
+                            selectRow(0);
+                        } else if (selectedRow < filteredEntries.length - 1) {
+                            selectRow(selectedRow + 1);
+                        }
+                        scrollToSelectedRow();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        if (selectedRow === null) {
+                            selectRow(filteredEntries.length - 1);
+                        } else if (selectedRow > 0) {
+                            selectRow(selectedRow - 1);
+                        }
+                        scrollToSelectedRow();
+                    }
+                }
+            });
+        }
+        
+        function scrollToSelectedRow() {
+            if (selectedRow !== null) {
+                const rows = document.querySelectorAll('#tableBody tr');
+                if (rows[selectedRow]) {
+                    rows[selectedRow].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }
+        }
+        
+        // ========================================
+        // COLUMN RESIZING
+        // ========================================
+        function setupColumnResizing() {
+            document.querySelectorAll('.resizer').forEach(resizer => {
+                resizer.addEventListener('mousedown', function(e) {
+                    isResizing = true;
+                    currentColumn = e.target.parentElement;
+                    startX = e.pageX;
+                    startWidth = currentColumn.offsetWidth;
+                    e.preventDefault();
+                });
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing) return;
+                
+                const width = startWidth + (e.pageX - startX);
+                if (width > 50) {
+                    currentColumn.style.width = width + 'px';
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isResizing = false;
+                currentColumn = null;
+            });
+        }
+        
+        // ========================================
+        // BEFORE UNLOAD WARNING
+        // ========================================
+        function setupBeforeUnload() {
+            window.addEventListener('beforeunload', function(e) {
+                if (hasUnsavedChanges && modifiedCount > 0) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                    return '';
+                }
+            });
+        }
+        
+        // ========================================
+        // UTILITIES
+        // ========================================
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => alert.remove(), 300);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

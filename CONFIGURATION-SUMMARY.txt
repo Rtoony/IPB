@@ -1,0 +1,359 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║     🎉 IPB MANAGER - CONFIGURED FOR YOUR SYSTEM 🎉               ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+## ✨ WHAT'S BEEN CUSTOMIZED FOR YOU
+
+Your IPB Manager Pro Enhanced is now fully configured with your specific
+network paths. No more typing paths every time!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 📁 YOUR PRESET PATHS
+
+**Main CSV File (99% of the time):**
+└─ J:\LIB\BR\xxBLOCKS\IPB-DescriptionKeys.csv
+
+**Block Library (all subfolders scanned):**
+└─ J:\LIB\BR\
+   ├─ Plumbing\
+   ├─ Electrical\
+   ├─ HVAC\
+   ├─ Fire\
+   └─ [...all other subfolders automatically included]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### ⚡ HOW IT WORKS NOW
+
+┌────────────────────────────────────────────────────────────────┐
+│ HTML TOOL (IPB-Manager-Pro-Enhanced.html)                      │
+├────────────────────────────────────────────────────────────────┤
+│ BEFORE (Generic):                                              │
+│   - Empty block path field                                     │
+│   - User types: J:\LIB\BR                                      │
+│   - Easy to mistype or forget                                  │
+│                                                                │
+│ NOW (Configured):                                              │
+│   ✅ Block path PRE-FILLED: J:\LIB\BR                          │
+│   ✅ Shows preset CSV location reminder                        │
+│   ✅ Visual confirmation of configuration                      │
+│   ✅ Just click "CHECK BLOCKS" - no typing!                    │
+└────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────┐
+│ PYTHON VALIDATOR (block_validator_configured.py)              │
+├────────────────────────────────────────────────────────────────┤
+│ BEFORE (Generic):                                              │
+│   $ python block_validator.py file.csv "J:\path"              │
+│   - Must type CSV path                                         │
+│   - Must type block path                                       │
+│   - Easy to mistype                                            │
+│   - Must remember paths                                        │
+│                                                                │
+│ NOW (Configured):                                              │
+│   $ python block_validator_configured.py                      │
+│   ✅ Uses preset CSV automatically                             │
+│   ✅ Uses preset block path automatically                      │
+│   ✅ Scans ALL subfolders recursively                          │
+│   ✅ No paths to type or remember!                             │
+└────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────┐
+│ BATCH FILE (VALIDATE_BLOCKS.bat)                              │
+├────────────────────────────────────────────────────────────────┤
+│ BEFORE (No batch file):                                        │
+│   - Open Command Prompt                                        │
+│   - Navigate to folder                                         │
+│   - Type Python command with paths                             │
+│   - 5+ steps                                                   │
+│                                                                │
+│ NOW (One-Click):                                               │
+│   ✅ Double-click VALIDATE_BLOCKS.bat                          │
+│   ✅ Runs validation automatically                             │
+│   ✅ Shows results                                             │
+│   ✅ Done! (1 step)                                            │
+└────────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 🚀 QUICK START - YOUR CONFIGURED SYSTEM
+
+#### DAILY EDITING:
+```
+1. Open: IPB-Manager-Pro-Enhanced.html
+2. Load: J:\LIB\BR\xxBLOCKS\IPB-DescriptionKeys.csv
+   (Tool reminds you where this is!)
+3. Work: Edit with double-click, arrow keys, Ctrl+Z
+4. Save: Click SAVE button
+```
+
+#### BLOCK VALIDATION:
+```
+EASIEST WAY:
+1. Double-click: VALIDATE_BLOCKS.bat
+2. Wait: ~30 seconds (scans all subfolders in J:\LIB\BR)
+3. Review: validation_report.txt
+4. Done!
+
+OR COMMAND LINE:
+$ python block_validator_configured.py
+```
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 📊 WHAT GETS SCANNED
+
+When you run validation, the Python script scans:
+
+```
+J:\LIB\BR\                           ← Main folder
+├── xxBLOCKS\
+│   └── IPB-DescriptionKeys.csv     ← Your CSV
+├── Plumbing\
+│   ├── PL-VALVE.dwg                ← ✓ Scanned
+│   ├── PL-PIPE.dwg                 ← ✓ Scanned
+│   └── ...                         ← ✓ Scanned
+├── Electrical\
+│   ├── EL-OUTLET.dwg               ← ✓ Scanned
+│   └── ...                         ← ✓ Scanned
+├── HVAC\
+│   └── ...                         ← ✓ Scanned
+├── Fire\
+│   └── ...                         ← ✓ Scanned
+└── [Every single subfolder]        ← ✓ All scanned!
+    └── [Every .dwg file found]     ← ✓ All found!
+```
+
+**RECURSIVE = Complete**
+- Finds blocks in any subfolder
+- No matter how deep
+- No blocks missed
+- Complete validation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 🎯 EXAMPLE VALIDATION RUN
+
+```
+C:\Tools> python block_validator_configured.py
+
+📌 Using preset configuration
+
+============================================================
+IPB BLOCK VALIDATION
+============================================================
+
+CSV File:      J:\LIB\BR\xxBLOCKS\IPB-DescriptionKeys.csv
+Block Folder:  J:\LIB\BR
+
+Step 1: Scanning block library (including all subfolders)...
+🔍 Scanning recursively: J:\LIB\BR
+   (This may take a moment for large libraries...)
+✅ Found 347 block files
+📁 Scanned 15 subfolders containing blocks:
+   - Plumbing
+   - Electrical
+   - HVAC
+   - Fire
+   - Site
+   - Irrigation
+   - Landscaping
+   - Playground
+   - Utilities
+   - Demolition
+   ... and 5 more
+
+Step 2: Validating CSV entries...
+✅ Validated 290 entries
+
+Step 3: Generating reports...
+📄 Report saved: validation_report.txt
+💾 Validated CSV saved: IPB-DescriptionKeys-Validated.csv
+
+============================================================
+VALIDATION COMPLETE
+============================================================
+✅ Valid:          285
+❌ Missing:        3
+⚠️  Empty Names:    2
+⚠️  Duplicates:     2
+
+Sample missing blocks:
+  - PL-OLD-VALVE-V1
+  - PL-TEST-BLOCK
+  - PL-OBSOLETE
+
+📄 Review 'validation_report.txt' for complete details
+
+Press any key to continue . . .
+```
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### ✅ CONFIGURATION CHECKLIST
+
+Everything that's been preset for you:
+
+HTML Tool:
+  ✅ Block library path: J:\LIB\BR
+  ✅ Visual reminder of CSV location
+  ✅ Preset configuration notice displayed
+  ✅ All 9 enhanced features working
+
+Python Validator (Configured):
+  ✅ Default CSV: J:\LIB\BR\xxBLOCKS\IPB-DescriptionKeys.csv
+  ✅ Default block folder: J:\LIB\BR
+  ✅ Recursive subfolder scanning enabled
+  ✅ Can override with command-line args if needed
+
+Batch File:
+  ✅ Runs configured Python validator
+  ✅ Shows preset paths on screen
+  ✅ Displays results
+  ✅ Pauses so you can read output
+
+Documentation:
+  ✅ SETUP-GUIDE-CONFIGURED.txt (your custom guide)
+  ✅ All other guides updated
+  ✅ Examples use your actual paths
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 🔄 COMPARISON: BEFORE vs AFTER
+
+┌─────────────────────────────────────────────────────────────┐
+│ TASK: Validate All Blocks                                   │
+├─────────────────────────────────────────────────────────────┤
+│ BEFORE (Generic Version):                                   │
+│   1. Open Command Prompt                                    │
+│   2. Navigate to tool folder                                │
+│   3. Type: python block_validator.py                        │
+│   4. Type CSV path (copy/paste from network)                │
+│   5. Type block folder path                                 │
+│   6. Wait for results                                       │
+│   Time: ~3 minutes, typing required                         │
+│                                                             │
+│ AFTER (Configured Version):                                 │
+│   1. Double-click VALIDATE_BLOCKS.bat                       │
+│   2. Wait for results                                       │
+│   Time: ~30 seconds, zero typing                            │
+│                                                             │
+│ ⚡ Result: 6x faster, zero errors from typos!               │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│ TASK: Check Block Validation in HTML Tool                   │
+├─────────────────────────────────────────────────────────────┤
+│ BEFORE (Generic Version):                                   │
+│   1. Load CSV                                               │
+│   2. Scroll to validation section                           │
+│   3. Type: J:\LIB\BR                                        │
+│   4. Click "CHECK BLOCKS"                                   │
+│   Time: 30 seconds, typing required                         │
+│                                                             │
+│ AFTER (Configured Version):                                 │
+│   1. Load CSV                                               │
+│   2. Scroll to validation section (path already there!)     │
+│   3. Click "CHECK BLOCKS"                                   │
+│   Time: 10 seconds, zero typing                             │
+│                                                             │
+│ ⚡ Result: 3x faster, path never forgotten!                 │
+└─────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 📝 WHAT TO DO IF PATHS CHANGE
+
+If your network structure changes, you can easily update:
+
+**HTML Tool:**
+1. Open IPB-Manager-Pro-Enhanced.html in Notepad
+2. Search for: PRESET_CONFIG
+3. Change the paths:
+   ```javascript
+   defaultCSVPath: 'NEW\\PATH\\file.csv',
+   blockLibraryPath: 'NEW\\PATH',
+   ```
+4. Save file
+
+**Python Validator:**
+1. Open block_validator_configured.py in Notepad
+2. Search for: PRESET_CSV
+3. Change the paths:
+   ```python
+   PRESET_CSV = r"NEW\PATH\file.csv"
+   PRESET_BLOCK_FOLDER = r"NEW\PATH"
+   ```
+4. Save file
+
+**Batch File:**
+- No changes needed! (automatically uses Python script settings)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 🎓 FOR YOUR TEAM
+
+**Team Deployment:**
+1. Copy all files to: J:\LIB\BR\xxBLOCKS\IPB-Tools\
+2. Share location with team
+3. Everyone uses same configured tools
+4. No setup needed per person
+5. Consistent paths across team
+
+**Benefits:**
+- Zero configuration for new users
+- Everyone uses correct paths
+- No training on path structure needed
+- Faster onboarding
+- Fewer support requests
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 🎯 FINAL SUMMARY
+
+You asked for:
+✅ Automatic block library path → DONE (J:\LIB\BR preset)
+✅ Automatic CSV file loading → DONE (Shows J:\...\IPB-DescriptionKeys.csv)
+✅ Recursive subfolder scanning → DONE (All folders under J:\LIB\BR)
+
+You got EXTRA:
+✅ One-click validation batch file
+✅ Custom setup guide for your paths
+✅ Zero typing for 99% of uses
+✅ Team-ready deployment
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### 📂 YOUR FILES
+
+Main Tools (Configured):
+├── IPB-Manager-Pro-Enhanced.html     ← HTML tool (block path preset)
+├── block_validator_configured.py     ← Python validator (both paths preset)
+└── VALIDATE_BLOCKS.bat               ← One-click validation
+
+Documentation:
+├── SETUP-GUIDE-CONFIGURED.txt        ← Start here! (your custom guide)
+├── START-HERE.txt                    ← Package overview
+├── QUICK-REFERENCE.txt               ← Keyboard shortcuts
+└── [Other guides...]                 ← Additional resources
+
+Legacy (Generic versions):
+└── block_validator.py                ← Original (for custom paths)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║  🎉 YOUR IPB MANAGER IS NOW FULLY CONFIGURED! 🎉                 ║
+║                                                                  ║
+║  Read: SETUP-GUIDE-CONFIGURED.txt for complete instructions     ║
+║  Quick Start: Just double-click VALIDATE_BLOCKS.bat!            ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+Version 2.5 Enhanced - Configured Edition
+Preset for: J:\LIB\BR network structure
+Ready to deploy to your team!

@@ -1,0 +1,589 @@
+# IPB MANAGER v3.1 - TESTING GUIDE
+## Block Status Column Validation
+
+---
+
+## 🎯 TESTING OBJECTIVES
+
+Verify that:
+1. ✅ BLOCK STATUS column appears correctly
+2. ✅ Status badges display properly
+3. ✅ Column is sortable
+4. ✅ Multi-sort works with new column
+5. ✅ Validation updates status correctly
+6. ✅ Color grouping still works
+7. ✅ All v3.0 features unaffected
+
+---
+
+## 🔧 PRE-TEST SETUP
+
+### **Requirements:**
+- Modern web browser (Chrome 90+, Firefox 88+, Edge 90+)
+- IPB-Manager-Pro-v3_1-Complete.html file
+- Sample CSV file (or use J:\LIB\BR\xxBLOCKS\IPB-DescriptionKeys.csv)
+
+### **Setup Steps:**
+1. Open IPB-Manager-Pro-v3_1-Complete.html in browser
+2. Load your CSV file
+3. Verify data loads correctly
+4. Proceed with tests below
+
+---
+
+## 📋 TEST SUITE
+
+### **TEST 1: Visual Verification**
+
+**Objective:** Confirm BLOCK STATUS column appears correctly
+
+**Steps:**
+1. Open the tool
+2. Load a CSV file
+3. Look at table header row
+
+**Expected Results:**
+- ✅ Column header shows "BLOCK STATUS"
+- ✅ Column appears between NOTES and ACTIONS
+- ✅ Column header is sortable (cursor changes on hover)
+- ✅ Resizer appears between columns
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 2: Initial Status Display**
+
+**Objective:** Verify "NOT CHECKED" status on initial load
+
+**Steps:**
+1. Load CSV file (fresh, no validation run)
+2. Examine BLOCK STATUS column
+
+**Expected Results:**
+- ✅ All entries show gray badge "- NOT CHECKED"
+- ✅ Badges are readable and properly styled
+- ✅ Symbols display correctly (dash)
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 3: Validation Updates**
+
+**Objective:** Verify status changes after validation
+
+**Steps:**
+1. Load CSV file
+2. Click "VALIDATE BLOCKS" button
+3. Wait for validation to complete
+4. Examine BLOCK STATUS column
+
+**Expected Results:**
+- ✅ Valid entries show green badge "✓ VALID"
+- ✅ Invalid entries show red badge "✗ INVALID"
+- ✅ No entries remain "NOT CHECKED"
+- ✅ Symbols display correctly (check/x)
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 4: Single Column Sort**
+
+**Objective:** Verify BLOCK STATUS column is sortable
+
+**Steps:**
+1. After validation, click BLOCK STATUS header once
+2. Observe sort order
+3. Click BLOCK STATUS header again
+4. Observe reversed sort order
+
+**Expected Results:**
+
+**First Click (Ascending):**
+- ✅ Sort indicator appears (▲¹)
+- ✅ Valid entries appear first
+- ✅ Not Checked entries in middle
+- ✅ Invalid entries appear last
+
+**Second Click (Descending):**
+- ✅ Sort indicator flips (▼¹)
+- ✅ Invalid entries appear first
+- ✅ Not Checked entries in middle
+- ✅ Valid entries appear last
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 5: Multi-Column Sort**
+
+**Objective:** Verify BLOCK STATUS works with multi-sort
+
+**Steps:**
+1. Click BLOCK STATUS header (sort by status)
+2. Click LAYER header (add layer to sort)
+3. Click CODE header (add code to sort)
+4. Observe table organization
+
+**Expected Results:**
+- ✅ Sort indicators show ▲¹ ▲² ▲³
+- ✅ Entries organized by status first
+- ✅ Within each status, sorted by layer
+- ✅ Within each layer, sorted by code
+- ✅ All three sort levels working
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 6: Clear Sort**
+
+**Objective:** Verify removing BLOCK STATUS from sort
+
+**Steps:**
+1. With multi-sort active, click BLOCK STATUS header 3 times total
+2. Observe sort indicators
+
+**Expected Results:**
+- ✅ First click: ▲ (ascending)
+- ✅ Second click: ▼ (descending)
+- ✅ Third click: Removed from sort
+- ✅ Other sorts remain active
+- ✅ Data reorganizes without status sort
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 7: Color Grouping Compatibility**
+
+**Objective:** Verify color groups work with status column
+
+**Steps:**
+1. Enable color grouping (🎨 GROUPS ON)
+2. Observe table with both features active
+
+**Expected Results:**
+- ✅ Color groups display correctly
+- ✅ Status badges visible on colored backgrounds
+- ✅ No visual conflicts
+- ✅ Badges readable on all color backgrounds
+- ✅ Both features work independently
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 8: Search/Filter Interaction**
+
+**Objective:** Verify status column works with filtering
+
+**Steps:**
+1. Run validation
+2. Use search box to filter entries
+3. Observe BLOCK STATUS column
+
+**Expected Results:**
+- ✅ Filtered entries retain correct status
+- ✅ Status badges still visible
+- ✅ Status sorts work on filtered results
+- ✅ Clear filter restores all entries with status
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 9: Layer Filter Interaction**
+
+**Objective:** Verify status column works with layer dropdown
+
+**Steps:**
+1. Run validation
+2. Select a layer from dropdown filter
+3. Observe BLOCK STATUS column
+4. Sort by BLOCK STATUS
+5. Clear layer filter
+
+**Expected Results:**
+- ✅ Layer filter doesn't affect status
+- ✅ Status badges correct for filtered layer
+- ✅ Sort works on filtered results
+- ✅ Clear filter restores all with correct status
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 10: Inline Editing**
+
+**Objective:** Verify inline editing still works with new column
+
+**Steps:**
+1. Double-click any editable field
+2. Make a change
+3. Press Enter
+4. Observe result
+
+**Expected Results:**
+- ✅ Inline editing works normally
+- ✅ Status column unaffected
+- ✅ Changes save correctly
+- ✅ Table re-renders properly
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 11: Add/Edit/Delete Operations**
+
+**Objective:** Verify CRUD operations work with new column
+
+**Steps:**
+1. Add a new entry
+2. Edit an existing entry
+3. Delete an entry
+4. Observe status column behavior
+
+**Expected Results:**
+- ✅ New entries show "NOT CHECKED"
+- ✅ Edited entries retain status (or reset to NOT CHECKED)
+- ✅ Deleted entries removed correctly
+- ✅ Status updates after re-validation
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 12: Quick Copy Feature**
+
+**Objective:** Verify Quick Copy works with status column
+
+**Steps:**
+1. Select a row with VALID status
+2. Click "⬆️ QUICK COPY"
+3. Save the copy
+4. Observe new entry
+
+**Expected Results:**
+- ✅ Quick Copy modal opens
+- ✅ New entry created successfully
+- ✅ New entry shows "NOT CHECKED" status
+- ✅ Original entry status unchanged
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 13: Batch Find/Replace**
+
+**Objective:** Verify batch operations work with status column
+
+**Steps:**
+1. Run validation
+2. Use Find/Replace to change multiple entries
+3. Observe status column
+
+**Expected Results:**
+- ✅ Find/Replace works normally
+- ✅ Status remains consistent
+- ✅ No errors occur
+- ✅ Re-validation updates status correctly
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 14: Undo/Redo**
+
+**Objective:** Verify undo/redo works with status column
+
+**Steps:**
+1. Make several changes
+2. Press Ctrl+Z (undo)
+3. Press Ctrl+Y (redo)
+4. Observe status column
+
+**Expected Results:**
+- ✅ Undo/redo works normally
+- ✅ Status column updates correctly
+- ✅ Status badges remain accurate
+- ✅ No visual glitches
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 15: Save/Load Cycle**
+
+**Objective:** Verify status column through save/load
+
+**Steps:**
+1. Run validation
+2. Save CSV file
+3. Close and reopen tool
+4. Load the saved CSV
+5. Observe status column
+
+**Expected Results:**
+- ✅ File saves successfully
+- ✅ File loads successfully
+- ✅ Status column appears
+- ✅ All entries show "NOT CHECKED" (correct - status not saved)
+- ✅ Re-validation updates status
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 16: Import CSV**
+
+**Objective:** Verify import works with status column
+
+**Steps:**
+1. Load initial CSV
+2. Import another CSV
+3. Observe status column
+
+**Expected Results:**
+- ✅ Import works normally
+- ✅ All entries show "NOT CHECKED"
+- ✅ Validation updates all entries
+- ✅ No errors occur
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 17: Export Filtered**
+
+**Objective:** Verify export works with status column
+
+**Steps:**
+1. Run validation
+2. Filter to show only INVALID entries
+3. Click "EXPORT FILTERED"
+4. Open exported file
+
+**Expected Results:**
+- ✅ Export completes successfully
+- ✅ Only filtered entries exported
+- ✅ Data intact (status column is UI only, not in CSV)
+- ✅ No errors occur
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 18: Safety Mode Toggle**
+
+**Objective:** Verify safety mode works with status column
+
+**Steps:**
+1. Toggle between BEGINNER and EXPERT modes
+2. Perform various operations
+3. Observe status column
+
+**Expected Results:**
+- ✅ Safety mode toggles work
+- ✅ Status column unaffected by mode
+- ✅ Confirmations appear correctly
+- ✅ Operations complete successfully
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 19: Responsive Behavior**
+
+**Objective:** Verify column resizing works
+
+**Steps:**
+1. Drag column resizer for BLOCK STATUS
+2. Make column wider
+3. Make column narrower
+
+**Expected Results:**
+- ✅ Column resizes smoothly
+- ✅ Badges remain readable
+- ✅ Other columns adjust appropriately
+- ✅ No layout breaking
+
+**Pass/Fail:** _______
+
+---
+
+### **TEST 20: Edge Cases**
+
+**Objective:** Test unusual scenarios
+
+**Steps:**
+1. Load empty CSV
+2. Load CSV with 1 entry
+3. Load CSV with 2000+ entries
+4. Observe status column behavior
+
+**Expected Results:**
+
+**Empty CSV:**
+- ✅ Shows empty state message
+- ✅ colspan="9" correct
+
+**Single Entry:**
+- ✅ Status displays correctly
+- ✅ Sort works
+- ✅ No errors
+
+**Large Dataset:**
+- ✅ Renders without lag
+- ✅ Sort performance acceptable
+- ✅ Scrolling smooth
+- ✅ All badges render
+
+**Pass/Fail:** _______
+
+---
+
+## 📊 TEST RESULTS SUMMARY
+
+### **Results:**
+
+| Test # | Test Name | Status | Notes |
+|--------|-----------|--------|-------|
+| 1 | Visual Verification | ☐ Pass ☐ Fail | |
+| 2 | Initial Status | ☐ Pass ☐ Fail | |
+| 3 | Validation Updates | ☐ Pass ☐ Fail | |
+| 4 | Single Sort | ☐ Pass ☐ Fail | |
+| 5 | Multi Sort | ☐ Pass ☐ Fail | |
+| 6 | Clear Sort | ☐ Pass ☐ Fail | |
+| 7 | Color Groups | ☐ Pass ☐ Fail | |
+| 8 | Search Filter | ☐ Pass ☐ Fail | |
+| 9 | Layer Filter | ☐ Pass ☐ Fail | |
+| 10 | Inline Edit | ☐ Pass ☐ Fail | |
+| 11 | CRUD Operations | ☐ Pass ☐ Fail | |
+| 12 | Quick Copy | ☐ Pass ☐ Fail | |
+| 13 | Batch Operations | ☐ Pass ☐ Fail | |
+| 14 | Undo/Redo | ☐ Pass ☐ Fail | |
+| 15 | Save/Load | ☐ Pass ☐ Fail | |
+| 16 | Import CSV | ☐ Pass ☐ Fail | |
+| 17 | Export Filtered | ☐ Pass ☐ Fail | |
+| 18 | Safety Mode | ☐ Pass ☐ Fail | |
+| 19 | Responsive | ☐ Pass ☐ Fail | |
+| 20 | Edge Cases | ☐ Pass ☐ Fail | |
+
+**Total Passed:** ____ / 20  
+**Total Failed:** ____ / 20  
+**Pass Rate:** _____%
+
+---
+
+## 🐛 BUG REPORT TEMPLATE
+
+If any test fails, document here:
+
+### **Bug #1:**
+- **Test Number:** ____
+- **Test Name:** ____
+- **Expected:** ____
+- **Actual:** ____
+- **Steps to Reproduce:** ____
+- **Severity:** ☐ Critical ☐ Major ☐ Minor
+- **Screenshots/Details:** ____
+
+### **Bug #2:**
+- **Test Number:** ____
+- **Test Name:** ____
+- **Expected:** ____
+- **Actual:** ____
+- **Steps to Reproduce:** ____
+- **Severity:** ☐ Critical ☐ Major ☐ Minor
+- **Screenshots/Details:** ____
+
+---
+
+## ✅ APPROVAL CHECKLIST
+
+Before approving for production:
+
+- [ ] All 20 tests passed
+- [ ] No critical bugs found
+- [ ] Minor bugs documented (if any)
+- [ ] Performance is acceptable
+- [ ] Visual appearance is professional
+- [ ] Documentation is accurate
+- [ ] Ready for deployment
+
+---
+
+## 📝 TESTER NOTES
+
+**Tester Name:** _________________  
+**Test Date:** _________________  
+**Browser:** _________________  
+**OS:** _________________  
+
+**General Observations:**
+_________________________________________________
+_________________________________________________
+_________________________________________________
+
+**Recommended Actions:**
+_________________________________________________
+_________________________________________________
+_________________________________________________
+
+**Sign-off:**
+☐ Approved for production  
+☐ Needs revision  
+
+**Signature:** _________________ **Date:** _________________
+
+---
+
+## 🎯 QUICK SMOKE TEST (5 Minutes)
+
+If time is limited, run this abbreviated test:
+
+1. **Load CSV** - Verify column appears ✓
+2. **Check Initial Status** - All show "NOT CHECKED" ✓
+3. **Run Validation** - Status updates to VALID/INVALID ✓
+4. **Sort by Status** - Click header, data organizes ✓
+5. **Multi-Sort** - Add layer to sort, both work ✓
+6. **Color Groups** - Enable, no conflicts ✓
+7. **Quick Operation** - Edit/Delete/Add, all work ✓
+
+**Result:** ☐ All Pass ☐ Issue Found
+
+---
+
+## 📞 SUPPORT
+
+If you encounter issues during testing:
+
+1. Check browser console for errors (F12)
+2. Verify file is v3.1 (check header)
+3. Try in different browser
+4. Clear browser cache
+5. Document issue in Bug Report section
+6. Contact developer with details
+
+---
+
+## 🚀 POST-TEST ACTIONS
+
+After successful testing:
+
+1. Mark all tests as complete
+2. Document any minor issues
+3. Create production deployment plan
+4. Update user documentation
+5. Schedule team demo
+6. Deploy to production
+
+---
+
+**Testing Guide Version:** 1.0  
+**For Tool Version:** IPB Manager Pro v3.1  
+**Guide Date:** October 30, 2024  
+**Status:** Ready for Use ✅
